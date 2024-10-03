@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Calculator</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-image: url('https://i.pinimg.com/originals/01/e5/73/01e573b1de95683672ef3763594345de.jpg');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        input, button {
+            margin: 10px;
+            padding: 15px; 
+            border-radius: 5px;
+            border: 2px solid transparent; /* Add a transparent border for effect */
+            font-size: 16px;
+            transition: background-color 0.3s, border-color 0.3s; /* Smooth transition */
+        }
+        input:hover {
+            background-color: rgba(255, 255, 255, 0.8); /* Lighten background on hover */
+            border-color: #007BFF; /* Change border color on hover */
+            cursor: pointer; /* Pointer cursor on hover */
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+            width: 200px;
+            height: 50px;
+            font-size: 18px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        h1 {
+            color: #fff;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 10px;
+            border-radius: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+        }
+        p {
+            color: #fff;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 10px;
+            border-radius: 10px;
+            display: none; /* Hide by default */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+        }
+        .fun-message {
+            color: #fff;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 14px; /* Reduced font size for mobile devices */
+            margin-top: 10px;
+            text-align: center;
+            display: block; /* Show by default */
+        }
+        @media (min-width: 600px) {
+            .fun-message {
+                font-size: 16px; /* Normal font size for larger screens */
+            }
+            h1 {
+                font-size: 2em; /* Increase the size of the heading */
+            }
+            input, button {
+                font-size: 18px; /* Slightly larger font for larger screens */
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Attendance Calculator</h1>
+
+    <label for="attendanceCriteria" style="color: white;">Enter Percentage Criteria (%):</label>
+    <input type="number" id="attendanceCriteria" value="75" onkeypress="moveToNext(event, 'totalClasses')"><br>
+
+    <label for="totalClasses" style="color: white;">Total Classes:</label>
+    <input type="number" id="totalClasses" onkeypress="moveToNext(event, 'attendedClasses')"><br>
+    
+    <label for="attendedClasses" style="color: white;">Attended Classes:</label>
+    <input type="number" id="attendedClasses" onkeypress="calculateOnEnter(event)"><br>
+    
+    <button onclick="calculateAttendance()">Calculate</button>
+    
+    <p class="fun-message">I Know It's Fun To Bunk And All, But Make Sure You Meet The Attendance Criteria :)</p>
+    
+    <p id="result"></p>
+    <p id="bunk"></p>
+    <p id="attendMore"></p>
+
+    <script>
+        function moveToNext(event, nextFieldId) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); 
+                document.getElementById(nextFieldId).focus();
+            }
+        }
+
+        function calculateOnEnter(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); 
+                calculateAttendance();
+            }
+        }
+
+        function calculateAttendance() {
+            let total = document.getElementById('totalClasses').value;
+            let attended = document.getElementById('attendedClasses').value;
+            let criteria = document.getElementById('attendanceCriteria').value / 100;
+
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('bunk').style.display = 'none';
+            document.getElementById('attendMore').style.display = 'none';
+
+            if (total > 0 && attended >= 0 && criteria > 0 && criteria <= 1) {
+                let percentage = (attended / total) * 100;
+                document.getElementById('result').innerText = "Your attendance is " + percentage.toFixed(2) + "%";
+                document.getElementById('result').style.display = 'block';
+
+                if (percentage < criteria * 100) {
+                    let requiredAttendance = criteria * total;
+                    let moreClasses = Math.ceil(requiredAttendance - attended);
+                    document.getElementById('attendMore').innerText = "You need to attend " + moreClasses + " more classes to reach " + (criteria * 100) + "%.";
+                    document.getElementById('attendMore').style.display = 'block';
+                } else {
+                    let maxBunks = Math.floor((attended / criteria) - total);
+                    document.getElementById('bunk').innerText = "You can bunk " + maxBunks + " more classes and still maintain " + (criteria * 100) + "% attendance.";
+                    document.getElementById('bunk').style.display = 'block';
+                }
+            } else {
+                document.getElementById('result').innerText = "Enter valid numbers!";
+                document.getElementById('result').style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
