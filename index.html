@@ -18,18 +18,33 @@
             align-items: center;
             flex-direction: column;
         }
+        label {
+            color: #FFD700; /* Gold Text Color */
+            font-weight: bold;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7); /* Softer Shadow */
+            text-transform: capitalize;
+            font-smooth: antialiased; /* Font Smoothing */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
         input, button {
             margin: 10px;
             padding: 15px; 
             border-radius: 5px;
-            border: 2px solid transparent; /* Add a transparent border for effect */
+            border: 2px solid transparent;
             font-size: 16px;
-            transition: background-color 0.3s, border-color 0.3s; /* Smooth transition */
+            transition: background-color 0.3s, border-color 0.3s;
+            outline: none;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3); /* Slight Shadow For Depth */
         }
-        input:hover {
-            background-color: rgba(255, 255, 255, 0.8); /* Lighten background on hover */
-            border-color: #007BFF; /* Change border color on hover */
-            cursor: pointer; /* Pointer cursor on hover */
+        input {
+            color: #000;
+            background-color: #fff;
+        }
+        input:hover, input:focus {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-color: #007BFF;
+            cursor: pointer;
         }
         button {
             background-color: #007BFF;
@@ -38,44 +53,57 @@
             width: 200px;
             height: 50px;
             font-size: 18px;
+            border: none;
+            box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.2); /* Button Shadow For Smoothness */
+            text-transform: capitalize;
         }
         button:hover {
             background-color: #0056b3;
         }
+        button:active {
+            background-color: #004085;
+            transform: scale(0.98);
+        }
         h1 {
-            color: #fff;
-            background-color: rgba(0, 0, 0, 0.8);
-            padding: 10px;
-            border-radius: 10px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
-        }
-        p {
-            color: #fff;
-            background-color: rgba(0, 0, 0, 0.8);
-            padding: 10px;
-            border-radius: 10px;
-            display: none; /* Hide by default */
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
-        }
-        .fun-message {
-            color: #fff;
+            color: white;
             background-color: rgba(0, 0, 0, 0.7);
             padding: 10px;
             border-radius: 10px;
-            font-size: 14px; /* Reduced font size for mobile devices */
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8); /* Softer Header Shadow */
+            font-smooth: antialiased;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-transform: capitalize;
+        }
+        p {
+            color: white;
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 10px;
+            border-radius: 10px;
+            display: none;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8); /* Softer Paragraph Shadow */
+            text-transform: capitalize;
+        }
+        .fun-message {
+            color: white;
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 14px;
             margin-top: 10px;
             text-align: center;
-            display: block; /* Show by default */
+            display: block;
+            text-transform: capitalize;
         }
         @media (min-width: 600px) {
             .fun-message {
-                font-size: 16px; /* Normal font size for larger screens */
+                font-size: 16px;
             }
             h1 {
-                font-size: 2em; /* Increase the size of the heading */
+                font-size: 2em;
             }
             input, button {
-                font-size: 18px; /* Slightly larger font for larger screens */
+                font-size: 18px;
             }
         }
     </style>
@@ -83,13 +111,13 @@
 <body>
     <h1>Attendance Calculator</h1>
 
-    <label for="attendanceCriteria" style="color: white;">Enter Percentage Criteria (%):</label>
+    <label for="attendanceCriteria">Enter Percentage Criteria (%):</label>
     <input type="number" id="attendanceCriteria" value="75" onkeypress="moveToNext(event, 'totalClasses')"><br>
 
-    <label for="totalClasses" style="color: white;">Total Classes:</label>
+    <label for="totalClasses">Total Classes:</label>
     <input type="number" id="totalClasses" onkeypress="moveToNext(event, 'attendedClasses')"><br>
     
-    <label for="attendedClasses" style="color: white;">Attended Classes:</label>
+    <label for="attendedClasses">Attended Classes:</label>
     <input type="number" id="attendedClasses" onkeypress="calculateOnEnter(event)"><br>
     
     <button onclick="calculateAttendance()">Calculate</button>
@@ -116,8 +144,8 @@
         }
 
         function calculateAttendance() {
-            let total = document.getElementById('totalClasses').value;
-            let attended = document.getElementById('attendedClasses').value;
+            let total = parseInt(document.getElementById('totalClasses').value);
+            let attended = parseInt(document.getElementById('attendedClasses').value);
             let criteria = document.getElementById('attendanceCriteria').value / 100;
 
             document.getElementById('result').style.display = 'none';
@@ -125,22 +153,28 @@
             document.getElementById('attendMore').style.display = 'none';
 
             if (total > 0 && attended >= 0 && criteria > 0 && criteria <= 1) {
+                if (attended > total) {
+                    document.getElementById('result').innerText = "Attended Classes Cannot Be Greater Than Total Classes!";
+                    document.getElementById('result').style.display = 'block';
+                    return;
+                }
+                
                 let percentage = (attended / total) * 100;
-                document.getElementById('result').innerText = "Your attendance is " + percentage.toFixed(2) + "%";
+                document.getElementById('result').innerText = "Your Attendance Is " + percentage.toFixed(2) + "%";
                 document.getElementById('result').style.display = 'block';
 
                 if (percentage < criteria * 100) {
-                    let requiredAttendance = criteria * total;
-                    let moreClasses = Math.ceil(requiredAttendance - attended);
-                    document.getElementById('attendMore').innerText = "You need to attend " + moreClasses + " more classes to reach " + (criteria * 100) + "%.";
+                    let additionalClassesNeeded = Math.ceil((criteria * total - attended) / (1 - criteria));
+                    let newTotalClasses = total + additionalClassesNeeded;
+                    document.getElementById('attendMore').innerText = "You Need To Attend " + additionalClassesNeeded + " More Classes To Reach " + (criteria * 100) + "% In A Total Of " + newTotalClasses + " Classes.";
                     document.getElementById('attendMore').style.display = 'block';
                 } else {
                     let maxBunks = Math.floor((attended / criteria) - total);
-                    document.getElementById('bunk').innerText = "You can bunk " + maxBunks + " more classes and still maintain " + (criteria * 100) + "% attendance.";
+                    document.getElementById('bunk').innerText = "You Can Bunk " + maxBunks + " More Classes And Still Maintain " + (criteria * 100) + "% Attendance.";
                     document.getElementById('bunk').style.display = 'block';
                 }
             } else {
-                document.getElementById('result').innerText = "Enter valid numbers!";
+                document.getElementById('result').innerText = "Enter Valid Numbers!";
                 document.getElementById('result').style.display = 'block';
             }
         }
